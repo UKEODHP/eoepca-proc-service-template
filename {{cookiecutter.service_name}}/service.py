@@ -658,7 +658,7 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs): # 
 
         else:
             conf["lenv"]["message"] = zoo._("Execution failed")
-            return zoo.SERVICE_FAILED
+            raise Exception("Execution failed")
 
     except Exception as e:
         logger.error("ERROR in processing execution template...")
