@@ -128,7 +128,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
             self.use_workspace = True
         else:
             self.use_workspace = False
-            
+
         self.calling_workspace_name = self.inputs.get("calling_workspace", {}).get("value", "default")
         self.executing_workspace_name = self.inputs.get("executing_workspace", {}).get("value", "default")
 
@@ -146,7 +146,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
 
             # DEBUG
             # logger.info(f"zzz PRE-HOOK - config...\n{json.dumps(self.conf, indent=2)}\n")
-            
+
             # decode the JWT token to get the user name
             if self.ades_rx_token:
                 self.username = self.get_user_name(
@@ -195,7 +195,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
             else:
                 logger.info("Using pre-configured storage details")
 
-            if self.executing_workspace_name in ["airbus", "planet"]:
+            if self.executing_workspace_name in ["airbus", "planet","open-cosmos"]:
                 output_prefix = f"commercial-data"
             else:
                 output_prefix = "processing-results/{{cookiecutter.workflow_id}}"
@@ -212,7 +212,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
             logger.error("ERROR in pre_execution_hook...")
             logger.error(traceback.format_exc())
             raise(e)
-        
+
         finally:
             self.restore_http_proxy_env()
 
@@ -270,7 +270,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
                     logger.info("Created collection from items")
                 except Exception as e:
                     logger.error(f"Exception: {e}"+str(e))
-            
+
             # Trap the case of no output collection
             if collection is None:
                 logger.error("ABORT: The output collection is empty")
@@ -288,7 +288,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
             if workspace_domain:
                 for link in collection_dict["links"]:
                     if "href" in link:
-                        link["href"] = link["href"].replace(f"s3://{bucket}/{os.path.join(workspace, subfolder)}", 
+                        link["href"] = link["href"].replace(f"s3://{bucket}/{os.path.join(workspace, subfolder)}",
                                                             f"https://{workspace}.{workspace_domain}/files/{bucket}/{subfolder}")
                         logger.info("Updated link href to " + link["href"])
 
@@ -314,7 +314,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
                 #self.feature_collection = requests.get(
                 #    f"{api_endpoint}/collections/{collection.id}", headers=headers
                 #).json()
-            
+
                 logger.info(f"Register processing results to collection")
                 r = requests.post(f"{api_endpoint}/register",
                                 json={"type": "stac-item", "url": collection.get_self_href()},
@@ -325,7 +325,7 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
             logger.error("ERROR in post_execution_hook...")
             logger.error(traceback.format_exc())
             raise(e)
-        
+
         finally:
             self.restore_http_proxy_env()
 
@@ -488,7 +488,7 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs): # 
 
         # Create a CustomObjectsApi client instance
         custom_api = client.CustomObjectsApi()
-        
+
         # Extract workspace names
         executing_workspace_name = inputs["executing_workspace"]["value"]
 
