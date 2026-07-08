@@ -195,10 +195,16 @@ class EoepcaCalrissianRunnerExecutionHandler(ExecutionHandler):
             else:
                 logger.info("Using pre-configured storage details")
 
+            logger.info(f"The executing_workspace_name is '{self.executing_workspace_name}'")
+
             if self.executing_workspace_name in ["airbus", "planet","open-cosmos"]:
                 output_prefix = f"commercial-data"
             else:
                 output_prefix = "processing-results/{{cookiecutter.workflow_id}}"
+
+            logger.info(
+                f"Resolved output_prefix='{output_prefix}' for executing_workspace_name='{self.executing_workspace_name}'"
+            )
 
             lenv = self.conf.get("lenv", {})
             self.conf["additional_parameters"]["job_id"] = lenv.get("usid", "")
